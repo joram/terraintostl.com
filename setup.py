@@ -7,6 +7,7 @@ packages = [
     "numpy",
     "numpy-stl",
     "shapely",
+    "rasterio",
 ]
 
 test_packages = [

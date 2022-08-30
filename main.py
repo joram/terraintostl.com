@@ -27,5 +27,4 @@ if __name__ == '__main__':
     ]
 
     build_stl(golden_hinde_region, "golden_hinde.stl")
-    build_stl(vancouver_island_region, "vancouver_island.stl", resolution=0.01)
-    print("written")
+    build_stl(vancouver_island_region, "vancouver_island.stl", resolution=0.001, z_scale=0.00002, fit_to_region=True)
