@@ -1,10 +1,4 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-from typing import List, Tuple
-
-from stl_util import build_stl
+from stl_generator.stl_util import build_stl
 
 
 if __name__ == '__main__':
@@ -26,5 +20,5 @@ if __name__ == '__main__':
         (51.0483, -129.1113),
     ]
 
-    build_stl(golden_hinde_region, "golden_hinde.stl", resolution=0.001, z_scale=0.00001,)
-    build_stl(vancouver_island_region, "vancouver_island.stl", resolution=0.002, z_scale=0.00002, fit_to_region=False)
+    build_stl(golden_hinde_region, "golden_hinde.stl", resolution=0.001, z_scale=0.00001, )
+    build_stl(vancouver_island_region, "vancouver_island.stl", resolution=0.002, z_scale=0.00002, fit_to_region=True)
