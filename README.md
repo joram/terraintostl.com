@@ -4,7 +4,8 @@ download GEOTIFF files from here: https://earthexplorer.usgs.gov/
 
 or pull a folder of vancouver island here: https://drive.google.com/file/d/1_2pQtuB1SNa2lZYEqgYDIcwSGux4143R/view?usp=sharing
 
-the files should be in a data folder, i.e. `./data/*.tif`
+the files should be in a data folder, i.e. `./data/raw/*.tif`
+then run `python ./fillnodata.py` to fill the nodata values with the mean of the surrounding pixels
 
 ## Install dependencies
 ```bash
