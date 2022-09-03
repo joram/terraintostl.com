@@ -8,6 +8,8 @@ packages = [
     "numpy-stl",
     "shapely",
     "rasterio",
+    "fastapi",
+    "uvicorn",
 ]
 
 test_packages = [
