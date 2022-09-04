@@ -9,12 +9,20 @@ then run `python ./fillnodata.py` to fill the nodata values with the mean of the
 
 ## Install dependencies
 ```bash
-make install   # to install dependencies
-pip install .  # to install python packages
+make install        # to install dependencies for Linux
+# make install-mac  # to install dependencies for OSX
+pip install .       # to install python packages
 ```
 
 ## Testing
 - run `./main.py` to generate two stl files (golden hinde and vancouver island)
 - view STLs here: https://www.viewstl.com/
 - it should render something like this:
-![example vancouver island](./docs/vancouver_island.png)- 
+![example vancouver island](./docs/vancouver_island.png)-
+
+## Docker
+
+```bash
+make image
+make run
+```
