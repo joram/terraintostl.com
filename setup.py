@@ -4,6 +4,7 @@ from setuptools import find_packages, setup
 
 packages = [
     "gdal==3.0.4",
+    "setuptools==57.5.0",
     "numpy",
     "numpy-stl",
     "shapely",
@@ -29,7 +30,7 @@ linting_packages = [
 ]
 
 setup(
-    name="Terrain Viewerr",
+    name="Terrain Viewer",
     version="1.0",
     description="returning STL files from a region",
     author="John Oram",
