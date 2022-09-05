@@ -3,7 +3,7 @@ from typing import Optional
 import numpy as np
 from shapely.geometry import Polygon, Point
 
-from geotiff import GeoTIFFS
+from .geotiff import GeoTIFFS
 from stl import mesh
 
 geoTIFFS = GeoTIFFS()

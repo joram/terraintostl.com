@@ -5,7 +5,6 @@ from typing import Optional
 import gdal
 import rasterio
 from rasterio import DatasetReader
-from rasterio.fill import fillnodata
 
 
 class GeoTIFFS:
@@ -19,7 +18,8 @@ class GeoTIFFS:
         ew = "w" if lat < 0 else "e"
         ns = "n" if lng > 0 else "s"
 
-        filename = f"./data/clean/{ns}{lng}_{ew}{int(math.fabs(lat))}_1arc_v3.tif"
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        filename = f"{dir_path}/../../data/clean/{ns}{lng}_{ew}{int(math.fabs(lat))}_1arc_v3.tif"
         if not os.path.exists(filename):
             return None
         if filename not in self.geotiffs:

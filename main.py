@@ -1,4 +1,4 @@
-from stl_generator.stl_util import build_stl
+from stl_util import build_stl
 
 
 if __name__ == '__main__':
