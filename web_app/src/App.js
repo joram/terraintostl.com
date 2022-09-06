@@ -27,18 +27,9 @@ function MenuBar() {
           active={activeItem === 'home'}
           onClick={handleItemClick}
         />
-        <Menu.Item
-          name='messages'
-          active={activeItem === 'messages'}
-          onClick={handleItemClick}
-        />
-        <Menu.Item
-          name='friends'
-          active={activeItem === 'friends'}
-          onClick={handleItemClick}
-        />
-        <Menu.Menu position='right'>
 
+
+        <Menu.Menu position='right'>
           <Menu.Item
             name='logout'
             active={activeItem === 'logout'}
@@ -89,7 +80,7 @@ function useQuery() {
 function RequestSTL() {
     let [resolution, setResolution] = useState(1);
     let [redirectURL, setRedirectURL] = useState(null);
-    let [name, setName] = useState("vancouver island.stl");
+    let [name, setName] = useState("vancouver island");
     let [zScale, setZScale] = useState(1);
     let query = useQuery();
     let region = query.get("region");
@@ -211,6 +202,33 @@ function SubmitRequest() {
 
 
 function Requests() {
+
+    let [stlFiles, setStlFiles] = useState([]);
+    if(stlFiles.length === 0) {
+        fetch("http://localhost:8000/stls", {
+            // mode: 'no-cors',
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                'Content-Type': 'application/json',
+            },
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data)
+                setStlFiles(data.stls);
+            })
+    }
+
+    let rows = [];
+    stlFiles.forEach((stl) => {
+        rows.push(<Table.Row>
+            <Table.Cell>{stl.name}</Table.Cell>
+            <Table.Cell>{stl.triangles}</Table.Cell>
+            <Table.Cell>{stl.filesize}</Table.Cell>
+            <Table.Cell>{stl.status}</Table.Cell>
+            <Table.Cell><a href={stl.url}>Download</a></Table.Cell>
+        </Table.Row>);
+    })
     return <>
         <MenuBar/>
         <Container>
@@ -226,13 +244,7 @@ function Requests() {
     </Table.Header>
 
     <Table.Body>
-      <Table.Row>
-        <Table.Cell>Cell</Table.Cell>
-        <Table.Cell>Cell</Table.Cell>
-        <Table.Cell>Cell</Table.Cell>
-        <Table.Cell>Cell</Table.Cell>
-        <Table.Cell>Cell</Table.Cell>
-      </Table.Row>
+        {rows}
     </Table.Body>
   </Table>
         </Container>

@@ -20,5 +20,5 @@ if __name__ == '__main__':
         (51.0483, -129.1113),
     ]
 
-    build_stl(golden_hinde_region, "golden_hinde.stl", resolution=0.001, z_scale=0.00001, )
+    build_stl(golden_hinde_region, "stls/golden_hinde.stl", resolution=0.001, z_scale=0.00001, )
     build_stl(vancouver_island_region, "vancouver_island.stl", resolution=0.002, z_scale=0.00002, fit_to_region=True)

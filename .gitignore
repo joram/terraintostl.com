@@ -1,4 +1,6 @@
 /data/
+/stls/
 .idea
 __pycache__
 *.stl
+/.env

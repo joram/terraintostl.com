@@ -1,5 +1,7 @@
 import base64
+import datetime
 import json
+import os
 import threading
 import time
 
@@ -19,12 +21,14 @@ def build_stls():
             region = request.region
             region = base64.b64decode(region)
             region = json.loads(region)
-
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            now = datetime.datetime.now()
+            filename = f"{dir_path}/../stls/{now.year}-{now.month}-{now.day}T{now.hour}:{now.minute}:{now.second}-{request.name}.stl"
             print(f"building STL with name: {request.name} region: {region},"
                   f" resolution: {request.resolution}, z_scale: {request.z_scale}")
             build_stl(
                 region=region,
-                filename=request.name,
+                filename=filename,
                 resolution=0.002*request.resolution,
                 z_scale=0.00002*request.z_scale,
                 fit_to_region=True,
