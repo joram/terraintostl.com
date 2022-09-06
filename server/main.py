@@ -43,7 +43,6 @@ async def get_stls() -> dict:
 
 
 app.mount("/static", StaticFiles(directory="../stls/"), name="stls")
-app.mount("/", StaticFiles(directory="./build/"), name="site")
 
 
 if __name__ == '__main__':

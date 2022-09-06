@@ -3,7 +3,6 @@
 from setuptools import find_packages, setup
 
 packages = [
-    "gdal==3.0.4",
     "numpy",
     "numpy-stl",
     "shapely",
