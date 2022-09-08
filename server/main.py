@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
 
 from payloads import BuildSTLRequest
-from worker import add_build_request
+from worker import add_build_request, get_progress
 
 app = FastAPI()
 app.add_middleware(
@@ -41,7 +41,10 @@ async def get_stls() -> dict:
                 "status": "done",
                 "url": f"https://terraintostlapi.oram.ca/static/{filename}",
             })
-    return {"stls": stls}
+    return {
+        "stls": stls,
+        "in_progress": get_progress(),
+    }
 
 
 app.mount("/static", StaticFiles(directory="../stls/"), name="stls")

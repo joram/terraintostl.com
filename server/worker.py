@@ -4,20 +4,45 @@ import json
 import os
 import threading
 import time
+from typing import Optional
 
 from payloads import BuildSTLRequest, BoundsEnum
 from stl_generator.stl_util import build_stl
 
 running = True
 build_requests = []
+in_progress_request = None
+in_progress_percentage = 0
+
+
+def get_progress() -> Optional[dict]:
+    global in_progress_request
+    global in_progress_percentage
+    if in_progress_request is not None:
+        return {
+            "name": in_progress_request.name,
+            "progress": in_progress_percentage,
+        }
+    return None
+
+
+def update_progress(progress: float):
+    global in_progress_request
+    global in_progress_percentage
+    in_progress_percentage = progress
+    if progress == 1:
+        in_progress_request = None
+        in_progress_percentage = 0
 
 
 def build_stls():
+    global in_progress_request
     global build_requests
     global running
     while running:
         if len(build_requests) > 0:
             request = build_requests.pop()
+            in_progress_request = request
             region = request.region
             region = base64.b64decode(region)
             region = json.loads(region)
@@ -32,6 +57,8 @@ def build_stls():
                 resolution=0.002*request.resolution,
                 z_scale=0.00002*request.z_scale,
                 fit_to_region=request.bounds == BoundsEnum.polygon,
+                drop_ocean_by=request.drop_ocean_by,
+                callback=update_progress,
             )
 
         if len(build_requests) == 0:

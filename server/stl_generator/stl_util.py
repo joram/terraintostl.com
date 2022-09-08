@@ -11,14 +11,19 @@ from stl import mesh
 geoTIFFS = GeoTIFFS()
 
 
-def get_triangles(lon, lat, size=0.01, z_scale=1.0, digits=7):
+def get_triangles(lon, lat, size=0.01, z_scale=1.0, digits=7, drop_ocean_by=0):
     lon = round(lon, digits)
     lat = round(lat, digits)
 
     def _get_pixel(x, y) -> Optional[float]:
         v = geoTIFFS.get_height(x, y)
+
         if v == -32767:
             return None
+
+        if v <= 0:
+            return -drop_ocean_by
+
         return v
 
     av = _get_pixel(lon, lat)
@@ -56,7 +61,7 @@ def mapCoordinates(latitude, longitude, z, reference_latitude):
 
 
 # Write STL file
-def build_stl(region, filename, resolution=0.0005, z_scale=0.00005, digits=8, fit_to_region=False):
+def build_stl(region, filename, resolution=0.0005, z_scale=0.00005, digits=8, fit_to_region=False, drop_ocean_by=0, callback=None):
     lons_vect = [lon for lon, lat in region]
     lats_vect = [lat for lon, lat in region]
     lons_lats_vect = np.column_stack((lons_vect, lats_vect))  # Reshape coordinates
@@ -74,14 +79,16 @@ def build_stl(region, filename, resolution=0.0005, z_scale=0.00005, digits=8, fi
         for lon in lons:
             if fit_to_region and not polygon.contains(Point(lon, lat)):
                 continue
-            for triangle in get_triangles(lat, lon, resolution, z_scale, digits):
+            for triangle in get_triangles(lat, lon, resolution, z_scale, digits, drop_ocean_by):
                 new_triangle = [mapCoordinates(lng,lat, z, reference_longitude) for lat,lng,z in triangle]
                 triangles.append(new_triangle)
 
-            if i % 50000 == 0:
-                print(f"{round(i*100/num_triangles, 2)}%")
+            if i % 5000 == 0:
+                if callback:
+                    callback(i/num_triangles)
             i += 1
-    print(f"{round(i * 100 / num_triangles, 2)}%")
+    if callback:
+        callback(1.0)
 
     # build the mesh
     num_triangles = len(triangles)

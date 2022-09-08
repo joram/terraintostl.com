@@ -14,19 +14,19 @@ function MenuBar() {
           as={Link} to={"/"}
         />
         <Menu.Item
-          name='requests'
-          active={activeItem === 'requests'}
+          name='Downloads'
+          active={activeItem === 'Downloads'}
           onClick={handleItemClick}
           as={Link} to={"/requests"}
         />
 
-        <Menu.Menu position='right'>
-          <Menu.Item
-            name='logout'
-            active={activeItem === 'logout'}
-            onClick={handleItemClick}
-          />
-        </Menu.Menu>
+        {/*<Menu.Menu position='right'>*/}
+        {/*  <Menu.Item*/}
+        {/*    name='logout'*/}
+        {/*    active={activeItem === 'logout'}*/}
+        {/*    onClick={handleItemClick}*/}
+        {/*  />*/}
+        {/*</Menu.Menu>*/}
       </Menu>
 
 }

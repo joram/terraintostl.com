@@ -10,12 +10,13 @@ function RequestSTL() {
     let [name, setName] = useState("vancouver island");
     let [zScale, setZScale] = useState(1);
     let [bounds, setBounds] = useState("polygon");
+    let [dropOceanBy, setDropOceanBy] = useState(0);
     let query = useQuery();
     let region = query.get("region");
 
     function onSubmit(){
         console.log("submit", region, resolution, name, zScale);
-        setNavigateURL("/request/submit?region=" + region + "&resolution=" + resolution + "&name=" + name + "&zScale=" + zScale+"&bounds="+bounds);
+        setNavigateURL("/request/submit?region=" + region + "&resolution=" + resolution + "&name=" + name + "&zScale=" + zScale+"&bounds="+bounds+"&dropOceanBy="+dropOceanBy);
     }
     if(NavigateURL !== null){
         return <Navigate to={NavigateURL} />
@@ -55,6 +56,16 @@ function RequestSTL() {
                               min={1}
                               max={10}
                               onChange={(event) => {setZScale(parseInt(event.target.value))}}
+                          />
+                      </Form.Field>
+                      <Form.Field inline>
+                          <label>Drop Ocean By</label>
+                          <input
+                              defaultValue={dropOceanBy}
+                              type={"number"}
+                              min={0}
+                              max={1000}
+                              onChange={(event) => {setDropOceanBy(parseInt(event.target.value))}}
                           />
                       </Form.Field>
 
