@@ -1,4 +1,11 @@
+import enum
+
 from pydantic import BaseModel
+
+
+class BoundsEnum(enum.Enum):
+    polygon = "polygon"
+    bounding_box = "boundingbox"
 
 
 class BuildSTLRequest(BaseModel):
@@ -6,3 +13,4 @@ class BuildSTLRequest(BaseModel):
     region: str  # md5 hash of the region in the format [(lat, lng), (lat, lng), ...]
     resolution: int = 1
     z_scale: int = 1
+    bounds: BoundsEnum = BoundsEnum.polygon

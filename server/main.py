@@ -29,7 +29,9 @@ async def build_stl(request: BuildSTLRequest) -> dict:
 async def get_stls() -> dict:
     stls =[]
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    for filename in os.listdir(f"{dir_path}/../stls"):
+    filenames = os.listdir(f"{dir_path}/../stls")
+    filenames.sort()
+    for filename in filenames:
         if filename.endswith(".stl"):
             print(filename)
             stls.append({
@@ -37,7 +39,7 @@ async def get_stls() -> dict:
                 "triangles": 69,
                 "filesize": os.path.getsize(os.path.join(f"{dir_path}/../stls/", filename)),
                 "status": "done",
-                "url": f"http://localhost:8000/static/{filename}",
+                "url": f"https://terraintostlapi.oram.ca/static/{filename}",
             })
     return {"stls": stls}
 

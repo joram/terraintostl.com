@@ -5,7 +5,7 @@ import os
 import threading
 import time
 
-from payloads import BuildSTLRequest
+from payloads import BuildSTLRequest, BoundsEnum
 from stl_generator.stl_util import build_stl
 
 running = True
@@ -25,13 +25,13 @@ def build_stls():
             now = datetime.datetime.now()
             filename = f"{dir_path}/../stls/{now.year}-{now.month}-{now.day}T{now.hour}:{now.minute}:{now.second}-{request.name}.stl"
             print(f"building STL with name: {request.name} region: {region},"
-                  f" resolution: {request.resolution}, z_scale: {request.z_scale}")
+                  f" resolution: {request.resolution}, z_scale: {request.z_scale}, bounds: {request.bounds}")
             build_stl(
                 region=region,
                 filename=filename,
                 resolution=0.002*request.resolution,
                 z_scale=0.00002*request.z_scale,
-                fit_to_region=True,
+                fit_to_region=request.bounds == BoundsEnum.polygon,
             )
 
         if len(build_requests) == 0:

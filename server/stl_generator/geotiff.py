@@ -53,14 +53,5 @@ class GeoTIFF:
     def get_height(self, lat, lng) -> float:
         x = int(self.width) - int((lng - self.bottom)/self.height * self.git)
         y = int((lat - self.left)/self.width * self.git)
-        v = self.band_arr[x, y]
-
-        # # TODO: fix this hack
-        # if v == -32767:
-        #     try:
-        #         return self.get_height(lat, lng+0.0001)
-        #     except:
-        #         return 0
-
-        return v
+        return self.band_arr[x, y]
 

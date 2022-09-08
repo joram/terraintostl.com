@@ -11,6 +11,7 @@ function SubmitRequest() {
     let resolution = query.get("resolution");
     let name = query.get("name");
     let zScale = query.get("zScale");
+    let bounds = query.get("bounds");
     let [requested, setRequested] = useState(false);
     let [response, setResponse] = useState(null);
     let [error, setError] = useState(null);
@@ -20,7 +21,8 @@ function SubmitRequest() {
             name: name,
             region: region,
             resolution: resolution,
-            z_scale: zScale
+            z_scale: zScale,
+            bounds: bounds,
         }
         console.log(body)
         fetch(getAPIURL()+"/stl", {

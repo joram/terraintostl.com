@@ -3,6 +3,14 @@ import {Container, Table} from "semantic-ui-react";
 import {getAPIURL} from "../utils";
 import MenuBar from "./menu_bar";
 
+function niceBytes(x){
+ const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  let l = 0, n = parseInt(x, 10) || 0;
+  while(n >= 1024 && ++l){
+      n = n/1024;
+  }
+  return(n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l]);
+}
 
 function ListRequests() {
 
@@ -27,7 +35,7 @@ function ListRequests() {
         stlFiles.forEach((stl) => {
             rows.push(<Table.Row>
                 <Table.Cell><a href={"/view?filename="+stl.name}>{stl.name}</a></Table.Cell>
-                <Table.Cell>{stl.filesize}</Table.Cell>
+                <Table.Cell>{niceBytes(stl.filesize)}</Table.Cell>
                 <Table.Cell>{stl.status}</Table.Cell>
                 <Table.Cell><a href={stl.url}>Download</a></Table.Cell>
             </Table.Row>);

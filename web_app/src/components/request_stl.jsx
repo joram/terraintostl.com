@@ -9,12 +9,13 @@ function RequestSTL() {
     let [NavigateURL, setNavigateURL] = useState(null);
     let [name, setName] = useState("vancouver island");
     let [zScale, setZScale] = useState(1);
+    let [bounds, setBounds] = useState("polygon");
     let query = useQuery();
     let region = query.get("region");
 
     function onSubmit(){
         console.log("submit", region, resolution, name, zScale);
-        setNavigateURL("/request/submit?region=" + region + "&resolution=" + resolution + "&name=" + name + "&zScale=" + zScale);
+        setNavigateURL("/request/submit?region=" + region + "&resolution=" + resolution + "&name=" + name + "&zScale=" + zScale+"&bounds="+bounds);
     }
     if(NavigateURL !== null){
         return <Navigate to={NavigateURL} />
@@ -55,6 +56,14 @@ function RequestSTL() {
                               max={10}
                               onChange={(event) => {setZScale(parseInt(event.target.value))}}
                           />
+                      </Form.Field>
+
+                      <Form.Field inline>
+                          <label>Bounds</label>
+                          <Button.Group>
+                              <Button name={"polygon"} onClick={()=> setBounds("polygon")} active={bounds==="polygon"}>fit to polygon</Button>
+                              <Button name={"boundingbox"} onClick={()=> setBounds("boundingbox")} active={bounds==="boundingbox"}>fit to bounding box</Button>
+                          </Button.Group>
                       </Form.Field>
                       <Button primary onClick={onSubmit}>Request</Button>
                   </Form>
