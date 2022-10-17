@@ -1,8 +1,11 @@
+#!/usr/bin/env python
+import pymesh
 import math
 from typing import Optional
 
 import numpy
 import numpy as np
+from numpy.linalg import norm
 from shapely.geometry import Polygon, Point
 
 from .geotiff import GeoTIFFS
@@ -53,12 +56,9 @@ def get_bounding_box(region):
     return bounding_box
 
 def mapCoordinates(latitude, longitude, z, reference_latitude):
-#    return new Vector2(longitude, Mathf.Rad2Deg * Mathf.Tan(latitude *  Mathf.Deg2Rad));
-#     return latitude, numpy.rad2deg(math.tan(numpy.deg2rad(longitude))), z
-    #return latitude, longitude, z
-    # return latitude, longitude * numpy.rad2deg(math.cos(numpy.deg2rad(latitude))), z
+    # https://en.wikipedia.org/wiki/Geographic_coordinate_conversion#From_geodetic_to_ECEF_coordinates
     return longitude * math.cos(numpy.deg2rad(reference_latitude)), latitude, z
-
+    # return longitude, latitude, z
 
 # Write STL file
 def build_stl(region, filename, resolution=0.0005, z_scale=0.00005, digits=8, fit_to_region=False, drop_ocean_by=0, callback=None):
@@ -66,7 +66,7 @@ def build_stl(region, filename, resolution=0.0005, z_scale=0.00005, digits=8, fi
     lats_vect = [lat for lon, lat in region]
     lons_lats_vect = np.column_stack((lons_vect, lats_vect))  # Reshape coordinates
     polygon = Polygon(lons_lats_vect)  # create polygon
-    reference_longitude = numpy.mean(lons_vect)
+    reference_longitude = polygon.centroid.x
 
     # get the triangles
     bounding_box = get_bounding_box(region)
@@ -83,9 +83,9 @@ def build_stl(region, filename, resolution=0.0005, z_scale=0.00005, digits=8, fi
                 new_triangle = [mapCoordinates(lng,lat, z, reference_longitude) for lat,lng,z in triangle]
                 triangles.append(new_triangle)
 
-            if i % 5000 == 0:
+            if i % 2000 == 0:
                 if callback:
-                    callback(i/num_triangles)
+                    callback(float(i)/num_triangles)
             i += 1
     if callback:
         callback(1.0)
@@ -102,3 +102,57 @@ def build_stl(region, filename, resolution=0.0005, z_scale=0.00005, digits=8, fi
     m = mesh.Mesh(data)
     m.save(filename)
     print("STL file saved to", filename)
+
+
+def reduce_size(filename="../../stls/2022-9-8T11:38:59-vancouver island.stl", tolerance=0.0001):
+    mesh = fix_mesh(pymesh.load_mesh(filename))
+    pymesh.save_mesh(f"{filename}.reduced.stl", mesh)
+
+    mesh = fix_mesh(pymesh.load_mesh(f"{filename}.reduced.stl"))
+    pymesh.save_mesh(f"{filename}.reduced.reduced.stl", mesh)
+
+
+def fix_mesh(mesh, detail="extrahigh", target_length=None):
+    bbox_min, bbox_max = mesh.bbox
+    diag_len = norm(bbox_max - bbox_min)
+    target_len = {
+        "extrahigh": diag_len * 5e-4,
+        "normal": diag_len * 5e-3,
+        "high": diag_len * 2.5e-3,
+        "low": diag_len * 1e-2,
+    }.get(detail, diag_len * 0.0001)
+    if target_length is not None:
+        target_len = target_length
+    print(f"Target resolution: {target_len} mm")
+
+    count = 0
+    mesh, __ = pymesh.remove_degenerated_triangles(mesh, 100)
+    mesh, __ = pymesh.split_long_edges(mesh, target_len)
+    num_vertices = mesh.num_vertices
+    print("#v: {}".format(num_vertices))
+    while True:
+        mesh, __ = pymesh.collapse_short_edges(mesh, 1e-6)
+        mesh, __ = pymesh.collapse_short_edges(mesh, target_len, preserve_feature=True)
+        mesh, __ = pymesh.remove_obtuse_triangles(mesh, 150.0, 100)
+        if mesh.num_vertices == num_vertices:
+            break
+
+        num_vertices = mesh.num_vertices
+        print("#v: {}".format(num_vertices))
+        count += 1
+        if count > 10: break
+
+    mesh = pymesh.resolve_self_intersection(mesh)
+    mesh, __ = pymesh.remove_duplicated_faces(mesh)
+    mesh = pymesh.compute_outer_hull(mesh)
+    mesh, __ = pymesh.remove_duplicated_faces(mesh)
+    mesh, __ = pymesh.remove_obtuse_triangles(mesh, 179.0, 5)
+    mesh, __ = pymesh.remove_isolated_vertices(mesh)
+
+
+
+    return mesh
+
+
+if __name__ == "__main__":
+    reduce_size()

@@ -33,7 +33,6 @@ async def get_stls() -> dict:
     filenames.sort()
     for filename in filenames:
         if filename.endswith(".stl"):
-            print(filename)
             stls.append({
                 "name": filename,
                 "triangles": 69,

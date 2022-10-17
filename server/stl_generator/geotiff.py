@@ -4,6 +4,7 @@ from typing import Optional
 
 import gdal
 import rasterio
+from numpy import ma
 from rasterio import DatasetReader
 
 
@@ -12,22 +13,23 @@ class GeoTIFFS:
     def __init__(self):
         self.geotiffs = {}
 
-    def get(self, lat, lng) -> Optional["GeoTIFF"]:
+    def get_geotiff(self, lat, lng) -> Optional["GeoTIFF"]:
         lat = math.floor(lat)
         lng = math.floor(lng)
         ew = "w" if lat < 0 else "e"
         ns = "n" if lng > 0 else "s"
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        filename = f"{dir_path}/../../data/clean/{ns}{lng}_{ew}{int(math.fabs(lat))}_1arc_v3.tif"
+        filename = f"{dir_path}/../../data/clean/{ns}{lng}_{ew}{abs(lat)}_1arc_v3.tif"
         if not os.path.exists(filename):
             return None
         if filename not in self.geotiffs:
+            print(f"opening geotiff {filename}")
             self.geotiffs[filename] = GeoTIFF(filename)
         return self.geotiffs[filename]
 
     def get_height(self, lat, lng) -> float:
-        geotiff = self.get(lat, lng)
+        geotiff = self.get_geotiff(lat, lng)
         if geotiff is None:
             return 0
 
@@ -41,8 +43,14 @@ class GeoTIFF:
         self.band_arr = dataset.read(band_id)
 
         img = gdal.Open(filename)
-        t = img.GetGeoTransform()
-        self.git = gdal.InvGeoTransform(t)[1]
+        gt = img.GetGeoTransform()
+        width = img.RasterXSize
+        height = img.RasterYSize
+
+
+        self.img = img
+        self.gt = gt
+        self.git = gdal.InvGeoTransform(gt)[1]
         self.left = dataset.bounds.left
         self.right = dataset.bounds.right
         self.top = dataset.bounds.top
@@ -51,7 +59,11 @@ class GeoTIFF:
         self.width = self.right-self.left
 
     def get_height(self, lat, lng) -> float:
-        x = int(self.width) - int((lng - self.bottom)/self.height * self.git)
-        y = int((lat - self.left)/self.width * self.git)
+        x = (self.width) - (lng - self.bottom)/self.height
+        y = (lat - self.left)/self.width
+
+        x = int(x*self.img.RasterYSize)
+        y = int(y*self.img.RasterXSize)
+
         return self.band_arr[x, y]
 

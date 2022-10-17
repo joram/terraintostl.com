@@ -30,12 +30,13 @@ def update_progress(progress: float):
     global in_progress_request
     global in_progress_percentage
     in_progress_percentage = progress
+    print(f"progress {in_progress_percentage*100}%")
     if progress == 1:
         in_progress_request = None
         in_progress_percentage = 0
 
 
-def build_stls():
+def build_stls_worker():
     global in_progress_request
     global build_requests
     global running
@@ -65,7 +66,7 @@ def build_stls():
             time.sleep(1)
 
 
-t = threading.Thread(target=build_stls, daemon=True)
+t = threading.Thread(target=build_stls_worker, daemon=True)
 t.start()
 
 

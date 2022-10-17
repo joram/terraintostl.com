@@ -11,7 +11,7 @@ class BoundsEnum(enum.Enum):
 class BuildSTLRequest(BaseModel):
     name: str = "Vancouver Island"
     region: str  # md5 hash of the region in the format [(lat, lng), (lat, lng), ...]
-    resolution: int = 1
+    resolution: float = 1.0
     z_scale: int = 1
     bounds: BoundsEnum = BoundsEnum.polygon
     drop_ocean_by: int = 0

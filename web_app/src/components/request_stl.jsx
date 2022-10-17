@@ -5,7 +5,7 @@ import MenuBar from "./menu_bar";
 import {useQuery} from "../utils";
 
 function RequestSTL() {
-    let [resolution, setResolution] = useState(1);
+    let [resolution, setResolution] = useState(1.0);
     let [NavigateURL, setNavigateURL] = useState(null);
     let [name, setName] = useState("vancouver island");
     let [zScale, setZScale] = useState(1);
@@ -43,9 +43,10 @@ function RequestSTL() {
                           <input
                               defaultValue={resolution}
                               type={"number"}
-                              min={1}
+                              min={0.01}
                               max={10}
-                              onChange={(event) => {setResolution(parseInt(event.target.value))}}
+                              step={0.1}
+                              onChange={(event) => {setResolution(parseFloat(event.target.value))}}
                           />
                       </Form.Field>
                       <Form.Field inline>

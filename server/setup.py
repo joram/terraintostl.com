@@ -9,6 +9,7 @@ packages = [
     "rasterio",
     "fastapi",
     "uvicorn",
+    "pymesh2"
 ]
 
 test_packages = [
@@ -28,7 +29,7 @@ linting_packages = [
 ]
 
 setup(
-    name="Terrain Viewerr",
+    name="Terrain Viewer",
     version="1.0",
     description="returning STL files from a region",
     author="John Oram",
