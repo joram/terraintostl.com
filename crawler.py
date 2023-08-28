@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
 import webbrowser
 import time
 import os
@@ -11,6 +12,7 @@ def get_filename(entity_id: str) -> str:
     entity_id = entity_id.replace("SRTM1", "").replace("V3", "").lower()
     filename = f"{entity_id[0:3]}_{entity_id[3:7]}_1arc_v3.tif"
     return filename
+
 
 def all_filenames():
     content = open("srtm_v3_63177cde8169203e.txt").read()

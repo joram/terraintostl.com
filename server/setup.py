@@ -9,7 +9,9 @@ packages = [
     "rasterio",
     "fastapi",
     "uvicorn",
-    "pymesh2"
+    "pymesh2",
+    "google-api-python-client",
+    "google-auth","google-auth-oauthlib", "google-auth-httplib2",
 ]
 
 test_packages = [

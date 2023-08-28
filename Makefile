@@ -1,5 +1,5 @@
 install:
-	apt-get install \
+	sudo apt install \
 		binutils \
 		libproj-dev \
 		gdal-bin
@@ -7,6 +7,13 @@ install:
 
 build:
 	cd server; docker build -t joram87/terraintostl .
+
+run: build
+	docker run -it -p 8000:8000 -v ${PWD}/data:/data -v ${PWD}/stls:/stls -v ${PWD}/server:/app joram87/terraintostl
+
+run_web:
+	cd web_app; npm i
+	cd web_app; npm start
 
 bash: build
 	docker run -it -v ${PWD}/data:/data -v ${PWD}/stls:/stls -v ${PWD}/server:/app joram87/terraintostl bash
