@@ -14,7 +14,7 @@ function niceBytes(x){
 
 const ListRequests = () => {
   const init = new Date()
-  const [date, setDate] = useState(init)
+  const [, setDate] = useState(init)
 
     const tick = () => {
         setDate(new Date())

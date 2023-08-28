@@ -12,6 +12,7 @@ run: build
 	docker run -it -p 8000:8000 -v ${PWD}/data:/data -v ${PWD}/stls:/stls -v ${PWD}/server:/app joram87/terraintostl
 
 run_web:
+	cd web_app; npx update-browserslist-db@latest
 	cd web_app; npm i
 	cd web_app; npm start
 

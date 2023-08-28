@@ -1,14 +1,15 @@
 import React from 'react'
-import {Menu, Modal, Image} from 'semantic-ui-react'
+import {Image, Menu, Modal} from 'semantic-ui-react'
 import {GoogleLogin} from "@react-oauth/google"
 import Cookies from 'universal-cookie'
 import {getAPIURL} from "../utils";
 
 const cookies = new Cookies();
 
-function LoginModal() {
+function LoginModal(props) {
+    let {trigger} = props
   const [open, setOpen] = React.useState(false)
-  const [googleCreds, setGoogleCreds] = React.useState(undefined)
+  const [, setGoogleCreds] = React.useState(undefined)
 
     function callHomeWithCredentials(credentialResponse) {
         fetch(getAPIURL()+"/login", {
@@ -40,7 +41,7 @@ function LoginModal() {
       onClose={() => setOpen(false)}
       onOpen={() => setOpen(true)}
       open={open}
-      trigger={<Menu.Item>Login</Menu.Item>}
+      trigger={trigger}
     >
       <Modal.Header>Login</Modal.Header>
       <Modal.Content>
