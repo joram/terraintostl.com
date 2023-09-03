@@ -15,3 +15,4 @@ class BuildSTLRequest(BaseModel):
     z_scale: int = 1
     bounds: BoundsEnum = BoundsEnum.polygon
     drop_ocean_by: int = 0
+    session_key: str

@@ -9,20 +9,24 @@ build:
 	cd server; docker build -t joram87/terraintostl .
 
 run: build
-	docker run -it -p 8000:8000 -v ${PWD}/data:/data -v ${PWD}/stls:/stls -v ${PWD}/server:/app joram87/terraintostl
+	docker run -it -p 8000:8000 -e API_URL="http://localhost:8000" -v ${PWD}/data:/data -v ${PWD}/stls:/stls -v ${PWD}/server:/app joram87/terraintostl
 
 run_web:
-	cd web_app; npx update-browserslist-db@latest
 	cd web_app; npm i
 	cd web_app; npm start
 
 bash: build
 	docker run -it -v ${PWD}/data:/data -v ${PWD}/stls:/stls -v ${PWD}/server:/app joram87/terraintostl bash
 
+build_peaks: build
+	docker run -it -v ${PWD}/data:/data -v ${PWD}/stls:/stls -v ${PWD}/server:/app joram87/terraintostl ./server/peaks.py
+
+
 reduce: build
 	docker run -it -v ${PWD}/data:/data -v ${PWD}/stls:/stls joram87/terraintostl python ./stl_generator/stl_util.py
 
 deploy_web:
+	cd web_app; npx update-browserslist-db@latest
 	cd web_app; npm run build
 	aws s3 sync ./web_app/build/ s3://terraintostl.com/
 	aws cloudfront create-invalidation --distribution-id=E23GF0NWEKO4ST --paths=/index.html

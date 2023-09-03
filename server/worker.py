@@ -7,7 +7,8 @@ import time
 from typing import Optional
 
 from payloads import BuildSTLRequest, BoundsEnum
-from stl_generator.stl_util import build_stl
+from sessions import get_session
+from stl_generator.stl_util import build_stl_from_polygon
 
 running = True
 build_requests = []
@@ -15,12 +16,16 @@ in_progress_request = None
 in_progress_percentage = 0
 
 
+def get_api_url() -> str:
+    return os.environ.get("API_URL", "https://terraintostlapi.oram.ca")
+
+
 def get_progress() -> Optional[dict]:
     global in_progress_request
     global in_progress_percentage
     if in_progress_request is not None:
         return {
-            "name": in_progress_request.name,
+            "name": in_progress_request.name or "",
             "progress": in_progress_percentage,
         }
     return None
@@ -49,14 +54,17 @@ def build_stls_worker():
             region = json.loads(region)
             dir_path = os.path.dirname(os.path.realpath(__file__))
             now = datetime.datetime.now()
-            filename = f"{dir_path}/../stls/{now.year}-{now.month}-{now.day}T{now.hour}:{now.minute}:{now.second}-{request.name}.stl"
-            print(f"building STL with name: {request.name} region: {region},"
-                  f" resolution: {request.resolution}, z_scale: {request.z_scale}, bounds: {request.bounds}")
-            build_stl(
-                region=region,
+            email = get_session(request.session_key)["email"]
+            filename = f"{dir_path}/../stls/{email}/{now.year}-{now.month}-{now.day}T{now.hour}:{now.minute}:{now.second}-{request.name}.stl"
+            print(
+                f"building STL with name: {request.name} region: {region},"
+                f" resolution: {request.resolution}, z_scale: {request.z_scale}, bounds: {request.bounds}"
+            )
+            build_stl_from_polygon(
+                polygon=region,
                 filename=filename,
-                resolution=0.002*request.resolution,
-                z_scale=0.00002*request.z_scale,
+                resolution=0.002 * request.resolution,
+                z_scale=0.00002 * request.z_scale,
                 fit_to_region=request.bounds == BoundsEnum.polygon,
                 drop_ocean_by=request.drop_ocean_by,
                 callback=update_progress,

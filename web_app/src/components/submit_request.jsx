@@ -3,7 +3,10 @@ import {Dimmer, Loader, Segment} from "semantic-ui-react";
 import {Navigate} from "react-router-dom";
 import {getAPIURL, useQuery} from "../utils";
 import MenuBar from "./menu_bar";
+import Cookies from "universal-cookie";
 
+
+const cookies = new Cookies();
 
 function SubmitRequest() {
     let query = useQuery();
@@ -25,7 +28,8 @@ function SubmitRequest() {
             resolution: resolution,
             z_scale: zScale,
             bounds: bounds,
-            drop_ocean_by: dropOceanBy
+            drop_ocean_by: dropOceanBy,
+            session_key: cookies.get("sessionDetails").session_key
         }
         console.log(body)
         fetch(getAPIURL()+"/stl", {

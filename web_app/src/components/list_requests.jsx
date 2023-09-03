@@ -1,16 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Container, Table} from "semantic-ui-react";
-import {getAPIURL} from "../utils";
+import {getAPIURL, niceBytes} from "../utils";
 import MenuBar from "./menu_bar";
+import Cookies from "universal-cookie";
 
-function niceBytes(x){
- const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-  let l = 0, n = parseInt(x, 10) || 0;
-  while(n >= 1024 && ++l){
-      n = n/1024;
-  }
-  return(n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l]);
-}
+const cookies = new Cookies();
+
 
 const ListRequests = () => {
   const init = new Date()
@@ -31,12 +26,20 @@ const ListRequests = () => {
     let [stlFiles, setStlFiles] = useState(null);
     let [inProgress, setInProgress] = useState(null);
     if(stlFiles === null) {
+        let sessionDetails = cookies.get('sessionDetails', { path: '/' })
+        console.log("sessionDetails:", sessionDetails)
+
+        let session_key = null
+        if(sessionDetails !== undefined){
+            session_key = sessionDetails.session_key
+        }
         fetch(getAPIURL()+"/stls", {
             // mode: 'no-cors',
             method: 'GET',
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
+                "session_key": session_key,
             },
         }).then(response => response.json())
             .then(data => {
@@ -50,7 +53,8 @@ const ListRequests = () => {
     if(stlFiles !== null) {
         stlFiles.forEach((stl) => {
             rows.push(<Table.Row key={stl.name}>
-                <Table.Cell><a href={"/view?filename="+stl.name}>{stl.name}</a></Table.Cell>
+                {/*<Table.Cell><a href={"/view?filename="+stl.name}>{stl.name}</a></Table.Cell>*/}
+                <Table.Cell>{stl.name}</Table.Cell>
                 <Table.Cell>{niceBytes(stl.filesize)}</Table.Cell>
                 <Table.Cell>{stl.status}</Table.Cell>
                 <Table.Cell><a href={stl.url}>Download</a></Table.Cell>

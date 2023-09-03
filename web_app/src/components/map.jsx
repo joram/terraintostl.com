@@ -3,6 +3,8 @@ import {Button, Header, Icon, Segment} from "semantic-ui-react";
 import {Link} from "react-router-dom";
 import {DrawingManager, GoogleMap, LoadScript} from "@react-google-maps/api";
 import MenuBar from "./menu_bar";
+import {isLoggedIn as isLoggedInFunc} from "../utils";
+import LoginButton from "./login_button";
 
 const containerStyle = {
   width: '100%',
@@ -14,9 +16,32 @@ const center = {
   lng: -123.4753
 };
 
-
 function Map() {
     let [popup, setPopup] = useState(null);
+    let [, setIsLoggedIn] = useState(isLoggedInFunc());
+
+    function loggedInPopup(region) {
+        return <Segment placeholder style={{margin:0}} >
+            <Header icon>
+              <Icon name='pdf file outline' />
+              You've selected an area. Would you like an STL file?
+            </Header>
+            <Button primary as={Link} to={`/request?region=${btoa(JSON.stringify(region))}`}>Request STL</Button>
+          </Segment>
+    }
+
+    function loginRequiredPopup(region) {
+        return <Segment placeholder style={{margin:0}} >
+            <Header icon>
+              <Icon name='pdf file outline' />
+              You've selected an area. If you would like to request an STL file, please login.
+            </Header>
+            <LoginButton onLogin={() => {
+                setIsLoggedIn(true)
+                setPopup(loggedInPopup(region))
+            }}/>
+          </Segment>
+    }
 
     const onPolygonComplete = poly => {
         let region = []
@@ -24,13 +49,11 @@ function Map() {
             region.push([point.lat(), point.lng()])
         })
 
-        setPopup(<Segment placeholder style={{margin:0}} >
-        <Header icon>
-          <Icon name='pdf file outline' />
-          You've selected an area. Would you like an STL file?
-        </Header>
-        <Button primary as={Link} to={`/request?region=${btoa(JSON.stringify(region))}`}>Request STL</Button>
-      </Segment>)
+        if(isLoggedInFunc()){
+            setPopup(loggedInPopup(region))
+        } else {
+            setPopup(loginRequiredPopup(region))
+        }
     }
 
 

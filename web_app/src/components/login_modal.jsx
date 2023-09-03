@@ -7,7 +7,7 @@ import {getAPIURL} from "../utils";
 const cookies = new Cookies();
 
 function LoginModal(props) {
-    let {trigger} = props
+    let {trigger, onLogin} = props
   const [open, setOpen] = React.useState(false)
   const [, setGoogleCreds] = React.useState(undefined)
 
@@ -15,7 +15,7 @@ function LoginModal(props) {
         fetch(getAPIURL()+"/login", {
             method: 'POST',
             headers: {
-                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Origin": getAPIURL(),
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
             },
@@ -25,6 +25,8 @@ function LoginModal(props) {
             cookies.set('googleCreds', credentialResponse, { path: '/' });
             cookies.set('sessionDetails', data, { path: '/' });
             setGoogleCreds(credentialResponse)
+            setOpen(false)
+            onLogin()
         })
     }
 
@@ -55,8 +57,7 @@ function LoginModal(props) {
         <span>
           <GoogleLogin
             onSuccess={credentialResponse => {
-              callHomeWithCredentials(credentialResponse);
-              setOpen(false)
+              callHomeWithCredentials(credentialResponse)
             }}
             onError={() => {
               console.log('Login Failed');

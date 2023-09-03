@@ -1,5 +1,7 @@
 
 ## Get some data
+
+### Heightmap geotiffs
 download GEOTIFF files from here: https://earthexplorer.usgs.gov/
 
 or pull a folder of vancouver island here: https://drive.google.com/file/d/1_2pQtuB1SNa2lZYEqgYDIcwSGux4143R/view?usp=sharing

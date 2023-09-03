@@ -1,6 +1,6 @@
-from stl_util import build_stl
+from stl_util import build_stl_from_polygon
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     VI = [
         [50.7573, -129.3420],
         [48.4292, -124.8486],
@@ -12,4 +12,10 @@ if __name__ == '__main__':
         [51.1173, -128.5730],
         [51.0483, -129.1113],
     ]
-    build_stl(VI, "vancouver_island_bounded.stl", resolution=0.005, z_scale=0.00005, fit_to_region=True)
+    build_stl_from_polygon(
+        VI,
+        "vancouver_island_bounded.stl",
+        resolution=0.005,
+        z_scale=0.00005,
+        fit_to_region=True,
+    )
