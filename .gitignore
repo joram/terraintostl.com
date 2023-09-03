@@ -5,3 +5,4 @@ __pycache__
 *.stl
 /.env
 /server/sessions.json
+/server/build/

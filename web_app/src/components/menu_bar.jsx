@@ -20,6 +20,15 @@ function MenuBar() {
             <Image src={"/mountain.png"} avatar />
             <span style={{paddingLeft:"5px"}}>Terrain To STL</span>
         </Menu.Item>
+        <Menu.Item
+          name='peak'
+          active={activeItem === 'peak'}
+          onClick={handleItemClick}
+          as={Link} to={"/request/peak"}
+        >
+            Peak
+        </Menu.Item>
+
         <LoginMenuItem/>
     </Menu>
 }

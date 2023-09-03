@@ -8,6 +8,7 @@ import SubmitRequest from "./components/submit_request";
 import RequestSTL from "./components/request_stl";
 import Map from "./components/map";
 import {GoogleOAuthProvider} from "@react-oauth/google";
+import RequestPeak from "./components/request_peak";
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                     <Routes>
                       <Route exact path='/' element={<Map/>}></Route>
                       <Route exact path='/request' element={<RequestSTL/>}></Route>
+                      <Route exact path='/request/peak' element={<RequestPeak/>}></Route>
                       <Route exact path='/request/submit' element={<SubmitRequest/>}></Route>
                       <Route exact path='/requests' element={<ListRequests/>}></Route>
                       <Route exact path='/view' element={<ViewSTL/>}></Route>

@@ -16,7 +16,7 @@ function RequestSTL() {
 
     function onSubmit(){
         console.log("submit", region, resolution, name, zScale);
-        setNavigateURL("/request/submit?region=" + region + "&resolution=" + resolution + "&name=" + name + "&zScale=" + zScale+"&bounds="+bounds+"&dropOceanBy="+dropOceanBy);
+        setNavigateURL("/request/submit?request_type=polygon&region=" + region + "&resolution=" + resolution + "&name=" + name + "&zScale=" + zScale+"&bounds="+bounds+"&dropOceanBy="+dropOceanBy);
     }
     if(NavigateURL !== null){
         return <Navigate to={NavigateURL} />

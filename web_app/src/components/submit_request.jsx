@@ -10,6 +10,7 @@ const cookies = new Cookies();
 
 function SubmitRequest() {
     let query = useQuery();
+    let request_type = query.get("request_type");
     let region = query.get("region");
     let resolution = query.get("resolution");
     let name = query.get("name");
@@ -23,6 +24,7 @@ function SubmitRequest() {
     if(!requested) {
         setRequested(true);
         let body = {
+            request_type:request_type,
             name: name,
             region: region,
             resolution: resolution,

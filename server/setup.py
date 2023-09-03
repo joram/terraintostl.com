@@ -11,7 +11,9 @@ packages = [
     "uvicorn",
     "pymesh2",
     "google-api-python-client",
-    "google-auth","google-auth-oauthlib", "google-auth-httplib2",
+    "google-auth",
+    "google-auth-oauthlib",
+    "google-auth-httplib2",
 ]
 
 test_packages = [
