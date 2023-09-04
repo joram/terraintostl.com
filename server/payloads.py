@@ -25,3 +25,4 @@ class BuildSTLRequest(BaseModel):
     z_scale: Optional[int] = 1
     bounds: Optional[BoundsEnum] = BoundsEnum.polygon
     drop_ocean_by: Optional[int] = 0
+    percentage_processed: Optional[float] = 0.0

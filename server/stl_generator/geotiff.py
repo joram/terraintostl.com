@@ -9,7 +9,6 @@ from rasterio import DatasetReader
 
 
 class GeoTIFFS:
-
     def __init__(self):
         self.geotiffs = {}
 
@@ -22,7 +21,12 @@ class GeoTIFFS:
         dir_path = os.path.dirname(os.path.realpath(__file__))
         filename = f"{dir_path}/../../data/clean/{ns}{lng}_{ew}{abs(lat)}_1arc_v3.tif"
         if not os.path.exists(filename):
-            return None
+            filename = (
+                f"{dir_path}/../../data/clean/{ns}{lng}_{ew}0{abs(lat)}_1arc_v3.tif"
+            )
+            if not os.path.exists(filename):
+                print(f"geotiff does not exist!: {filename}")
+                return None
         if filename not in self.geotiffs:
             print(f"opening geotiff {filename}")
             self.geotiffs[filename] = GeoTIFF(filename)
@@ -37,16 +41,14 @@ class GeoTIFFS:
 
 
 class GeoTIFF:
-
     def __init__(self, filename: str, band_id=1):
-        dataset: DatasetReader = rasterio.open(filename, driver='GTiff')
+        dataset: DatasetReader = rasterio.open(filename, driver="GTiff")
         self.band_arr = dataset.read(band_id)
 
         img = gdal.Open(filename)
         gt = img.GetGeoTransform()
         width = img.RasterXSize
         height = img.RasterYSize
-
 
         self.img = img
         self.gt = gt
@@ -55,15 +57,14 @@ class GeoTIFF:
         self.right = dataset.bounds.right
         self.top = dataset.bounds.top
         self.bottom = dataset.bounds.bottom
-        self.height = self.top-self.bottom
-        self.width = self.right-self.left
+        self.height = self.top - self.bottom
+        self.width = self.right - self.left
 
     def get_height(self, lat, lng) -> float:
-        x = (self.width) - (lng - self.bottom)/self.height
-        y = (lat - self.left)/self.width
+        x = (self.width) - (lng - self.bottom) / self.height
+        y = (lat - self.left) / self.width
 
-        x = int(x*self.img.RasterYSize)
-        y = int(y*self.img.RasterXSize)
+        x = int(x * self.img.RasterYSize)
+        y = int(y * self.img.RasterXSize)
 
         return self.band_arr[x, y]
-

@@ -63,12 +63,14 @@ const ListRequests = () => {
     }
 
     if(inProgress !== null) {
-        rows.push(<Table.Row key={"in progress"}>
-            <Table.Cell>{inProgress.name}</Table.Cell>
-            <Table.Cell></Table.Cell>
-            <Table.Cell>building {Math.round(inProgress.progress*10000)/100}%</Table.Cell>
-            <Table.Cell></Table.Cell>
-        </Table.Row>)
+        inProgress.forEach((request) => {
+            rows.push(<Table.Row key={"in progress"}>
+                <Table.Cell>{request.name}</Table.Cell>
+                <Table.Cell></Table.Cell>
+                <Table.Cell>building {Math.round(request.progress * 10000) / 100}%</Table.Cell>
+                <Table.Cell></Table.Cell>
+            </Table.Row>)
+        })
     }
 
     return <>

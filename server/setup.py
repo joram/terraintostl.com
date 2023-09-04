@@ -5,6 +5,7 @@ from setuptools import find_packages, setup
 packages = [
     "numpy",
     "numpy-stl",
+    "pyproj",
     "shapely",
     "rasterio",
     "fastapi",
@@ -14,6 +15,7 @@ packages = [
     "google-auth",
     "google-auth-oauthlib",
     "google-auth-httplib2",
+    "whoosh",
 ]
 
 test_packages = [

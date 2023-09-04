@@ -33,8 +33,10 @@ deploy_web:
 
 deploy_server: build
 	docker push joram87/terraintostl
-	ssh 192.168.1.222 "cd projects/nas; docker-compose pull terraintostl; docker-compose up -d terraintostl; docker-compose logs -f terraintostl"
+	ssh 192.168.1.222 "cd projects/nas; docker compose pull terraintostl; docker compose up -d terraintostl; docker compose logs -f terraintostl"
 
 tail_logs:
-	ssh 192.168.1.222 "cd projects/nas; docker-compose logs -f terraintostl"
+	ssh 192.168.1.222 "cd projects/nas; docker compose logs -f terraintostl"
 
+ssh_server:
+	ssh 192.168.1.222

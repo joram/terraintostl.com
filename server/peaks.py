@@ -3,8 +3,6 @@ import json
 import os
 import subprocess
 
-from stl_generator.stl_util import build_stl_from_circle
-
 LOADED_PEAKS = False
 
 
@@ -41,8 +39,11 @@ def find_peak(name: str):
     """Find a peak by its name."""
     global LOADED_PEAKS
     if not LOADED_PEAKS:
-        _clone_peaks_repo()
-        _cache_all_peak_filenames()
+        try:
+            _clone_peaks_repo()
+            _cache_all_peak_filenames()
+        except Exception as e:
+            print(e)
         LOADED_PEAKS = True
 
     name = name.lower()
@@ -59,14 +60,3 @@ def get_coordinates(name: str):
     if peak:
         return peak["geometry"]["coordinates"]
     return None
-
-
-if __name__ == "__main__":
-    lng, lat = get_coordinates("Golden Hinde")
-    print(lat, lng)
-    build_stl_from_circle(
-        center=(lat, lng),
-        radius=0.1,
-        z_scale=1,
-        filename="golden_hinde.stl",
-    )

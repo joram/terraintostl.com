@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+import json
+import os
+import sqlite3
+
+from whoosh import scoring
+from whoosh.fields import Schema, TEXT, ID
+from whoosh.index import create_in
+from whoosh.qparser import QueryParser
+
+INDEX = None
+
+
+class PeaksSearchEngine:
+    def __init__(self):
+        self.db_filepath = os.path.join(
+            os.path.dirname(__file__), "../data/peaks.sqlite3"
+        )
+        if not os.path.exists(self.db_filepath):
+            self._create_index()
+            self._populate_table()
+
+    def _create_index(self):
+        conn = sqlite3.connect(self.db_filepath)
+        cursor = conn.cursor()
+        cursor.execute(
+            """CREATE TABLE IF NOT EXISTS documents
+                          (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT)"""
+        )
+        conn.commit()
+        conn.close()
+
+    def _populate_table(self):
+        conn = sqlite3.connect(self.db_filepath)
+        cursor = conn.cursor()
+        for results in os.walk(
+            os.path.join(os.path.dirname(__file__), "../data/peaks")
+        ):
+            for file in results[2]:
+                filepath = os.path.join(results[0], file)
+                filepath = os.path.abspath(filepath)
+                if not filepath.endswith(".geojson"):
+                    continue
+                if filepath.endswith("index.geojson"):
+                    continue
+                with open(filepath, "r") as f:
+                    data = f.read()
+                    cursor.execute(
+                        "INSERT INTO documents (title, content) VALUES (?, ?)",
+                        (filepath, data),
+                    )
+        conn.commit()
+        conn.close()
+
+    def search(self, keyword):
+        conn = sqlite3.connect(self.db_filepath)
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT id, title, content FROM documents WHERE title LIKE ? OR content LIKE ?",
+            ("%" + keyword + "%", "%" + keyword + "%"),
+        )
+        results = cursor.fetchall()
+        data = []
+        for result in results:
+            [id, title, content] = result
+            content = json.loads(content)
+            coords = content["geometry"]["coordinates"]
+            data.append(
+                {
+                    "id": id,
+                    "filepath": title,
+                    "content": content,
+                    "coords": coords,
+                    "name": content["properties"]["name"],
+                }
+            )
+        conn.close()
+        return data
+
+
+def get_peak_index():
+    global INDEX
+    if INDEX is None:
+        print("Building peak index...")
+        INDEX = PeaksSearchEngine()
+        print("Done building peak index.")
+    return INDEX
+
+
+get_peak_index()
+if __name__ == "__main__":
+    index = get_peak_index()
+    for search_text in ["Everest", "peak", "triple", "hinde"]:
+        results = index.search(search_text)
+        for result in results:
+            print(result["filepath"], result["coords"])

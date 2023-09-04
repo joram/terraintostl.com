@@ -76,6 +76,8 @@ RUN \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf "${SOURCE_DIR}"
+
+RUN adduser --uid 1000 john
 ################################################################
 
 ADD setup.py /app/
@@ -90,4 +92,5 @@ RUN mkdir /data
 #VOLUME /data
 
 WORKDIR /app
+USER john
 CMD ["python", "-m", "main"]

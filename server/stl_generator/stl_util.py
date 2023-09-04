@@ -73,9 +73,10 @@ def _build_stl(
     callback=None,
 ):
     reference_longitude = polygon.centroid.x
+    callback(0)
+
     # get the triangles
     bounding_box = polygon.bounds
-    # bounding_box = get_bounding_box(polygon)
     lons = np.arange(bounding_box[0], bounding_box[2], resolution)
     lats = np.arange(bounding_box[1], bounding_box[3], resolution)
     triangles = []
@@ -94,9 +95,8 @@ def _build_stl(
                 ]
                 triangles.append(new_triangle)
 
-            if i % 2000 == 0:
-                if callback:
-                    callback(float(i) / num_triangles)
+            if callback and i % 100 == 0:
+                callback(float(i) / num_triangles)
             i += 1
     if callback:
         callback(1.0)
@@ -139,29 +139,6 @@ def build_stl_from_polygon(
         fit_to_region,
         drop_ocean_by,
         callback,
-    )
-
-
-def build_stl_from_circle(
-    center,
-    radius,
-    filename,
-    resolution=0.0005,
-    z_scale=0.00005,
-    digits=8,
-    drop_ocean_by=0,
-    callback=None,
-):
-    circle = Point(center).buffer(radius)
-    return _build_stl(
-        circle,
-        filename,
-        resolution,
-        z_scale,
-        digits,
-        fit_to_region=True,
-        drop_ocean_by=drop_ocean_by,
-        callback=callback,
     )
 
 
