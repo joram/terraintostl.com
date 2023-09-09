@@ -2,23 +2,40 @@
 import json
 import os
 import sqlite3
-
-from whoosh import scoring
-from whoosh.fields import Schema, TEXT, ID
-from whoosh.index import create_in
-from whoosh.qparser import QueryParser
+import subprocess
 
 INDEX = None
 
 
 class PeaksSearchEngine:
     def __init__(self):
-        self.db_filepath = os.path.join(
-            os.path.dirname(__file__), "../data/peaks.sqlite3"
+        self.db_filepath = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "../data/peaks.sqlite3")
         )
+        self.peaks_dir = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "../data/peaks")
+        )
+        if not os.path.exists(self.peaks_dir):
+            self._clone_peaks_repo()
+
         if not os.path.exists(self.db_filepath):
             self._create_index()
+            self._create_index()
             self._populate_table()
+
+    def _clone_peaks_repo(self):
+        """Clone the peaks repo if it does not exist, otherwise pull the latest changes."""
+        print("looking at peaks dir", self.peaks_dir)
+
+        if os.path.isdir(self.peaks_dir):
+            print("Pulling latest changes from peaks repo...")
+            subprocess.call(["git", "pull"], cwd=self.peaks_dir)
+            return
+
+        print("Cloning peaks repo...")
+        subprocess.call(
+            ["git", "clone", "git@github.com:joram/peaks.git", self.peaks_dir]
+        )
 
     def _create_index(self):
         conn = sqlite3.connect(self.db_filepath)
@@ -33,9 +50,7 @@ class PeaksSearchEngine:
     def _populate_table(self):
         conn = sqlite3.connect(self.db_filepath)
         cursor = conn.cursor()
-        for results in os.walk(
-            os.path.join(os.path.dirname(__file__), "../data/peaks")
-        ):
+        for results in os.walk(self.peaks_dir):
             for file in results[2]:
                 filepath = os.path.join(results[0], file)
                 filepath = os.path.abspath(filepath)

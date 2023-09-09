@@ -2,9 +2,7 @@ import base64
 import datetime
 import json
 import os
-import threading
-import time
-from typing import Optional, List
+from typing import List
 
 from payloads import BuildSTLRequest, BoundsEnum, RequestType
 from peaks import get_coordinates
