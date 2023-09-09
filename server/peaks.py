@@ -4,31 +4,29 @@ import os
 import subprocess
 
 LOADED_PEAKS = False
+PEAKS = {}
+pwd = os.path.dirname(os.path.realpath(__file__))
+data_dir = os.path.join(pwd, "../data/peaks")
+PEAKS_DIR = os.path.abspath(data_dir)
 
 
 def _clone_peaks_repo():
     """Clone the peaks repo if it does not exist, otherwise pull the latest changes."""
-    pwd = os.path.dirname(os.path.realpath(__file__))
-    data_dir = os.path.join(pwd, "../data/peaks")
+    print("looking at peaks dir", PEAKS_DIR)
 
-    if os.path.isdir(data_dir):
+    if os.path.isdir(PEAKS_DIR):
         print("Pulling latest changes from peaks repo...")
-        subprocess.call(["git", "pull"], cwd=data_dir)
+        subprocess.call(["git", "pull"], cwd=PEAKS_DIR)
         return
 
     print("Cloning peaks repo...")
-    subprocess.call(["git", "clone", "git@github.com:joram/peaks.git", data_dir])
-
-
-PEAKS = {}
+    subprocess.call(["git", "clone", "git@github.com:joram/peaks.git", PEAKS_DIR])
 
 
 def _cache_all_peak_filenames():
     """Cache all peak filenames."""
     global PEAKS
-    pwd = os.path.dirname(os.path.realpath(__file__))
-    data_dir = os.path.join(pwd, "../data/peaks")
-    for subdir, dirs, files in os.walk(data_dir):
+    for subdir, dirs, files in os.walk(PEAKS_DIR):
         for file in files:
             filepath = os.path.join(subdir, file)
             if filepath.endswith(".geojson"):

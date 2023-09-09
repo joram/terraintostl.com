@@ -13,6 +13,9 @@ class GeoTIFFS:
         self.geotiffs = {}
 
     def get_geotiff(self, lat, lng) -> Optional["GeoTIFF"]:
+        if lat is None or lng is None:
+            return None
+
         lat = math.floor(lat)
         lng = math.floor(lng)
         ew = "w" if lat < 0 else "e"
