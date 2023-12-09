@@ -29,13 +29,18 @@ class PeaksSearchEngine:
 
         if os.path.isdir(self.peaks_dir):
             print("Pulling latest changes from peaks repo...")
-            subprocess.call(["git", "pull"], cwd=self.peaks_dir)
+            output = subprocess.check_output(
+                ["git", "pull"], cwd=self.peaks_dir, universal_newlines=True
+            )
+            print(output)
             return
 
         print("Cloning peaks repo...")
-        subprocess.call(
-            ["git", "clone", "git@github.com:joram/peaks.git", self.peaks_dir]
+        output = subprocess.check_output(
+            ["git", "clone", "git@github.com:joram/peaks.git", self.peaks_dir],
+            universal_newlines=True,
         )
+        print(output)
 
     def _create_index(self):
         conn = sqlite3.connect(self.db_filepath)
@@ -58,6 +63,7 @@ class PeaksSearchEngine:
                     continue
                 if filepath.endswith("index.geojson"):
                     continue
+
                 with open(filepath, "r") as f:
                     data = f.read()
                     cursor.execute(

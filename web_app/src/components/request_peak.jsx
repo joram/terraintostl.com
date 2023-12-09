@@ -8,14 +8,8 @@ function RequestPeak() {
     let [resolution, setResolution] = useState(1.0);
     let [NavigateURL, setNavigateURL] = useState(null);
     let [name, setName] = useState("everest");
-    let [searchResults, setSearchResults] = useState([]);
+    let [searchResults, setSearchResults] = useState(null);
         let query = useQuery();
-
-    function onSubmit(){
-        console.log("submit", resolution, name);
-        // setNavigateURL("/request/submit?name=" + name + "&resolution=" + resolution+"&request_type=peak");
-
-    }
 
     function search(){
         console.log("search", name);
@@ -38,17 +32,28 @@ function RequestPeak() {
     }
 
     let resultsSegment = null;
-    if(searchResults.length > 0){
+    if(searchResults && searchResults.length > 0){
          resultsSegment = <Segment>
             <Header>Search Results</Header>
             <ul>
                 {searchResults.map((result) => {
-                    return <li key={result.id}><a href={"/request/submit?request_type=peak&name="+result.name+"&resolution=1"}>{result.name}</a></li>
+                    return <li key={result.id}><a href={"/request/submit?request_type=peak&name="+result.name+"&resolution=1"}>
+                        {result.content.properties.countries[0]}, {result.name}
+                    </a></li>
                 }
                 )}
             </ul>
         </Segment>
     }
+    if(searchResults && searchResults.length === 0){
+         resultsSegment = <Segment>
+            <Header>Search Results</Header>
+            <ul>
+                <li>Nothing Found</li>
+            </ul>
+        </Segment>
+    }
+
       return (<>
             <MenuBar/>
               <Segment>
