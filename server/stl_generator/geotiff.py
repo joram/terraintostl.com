@@ -22,14 +22,21 @@ class GeoTIFFS:
         ns = "n" if lng > 0 else "s"
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        filename = f"{dir_path}/../../data/clean/{ns}{lng}_{ew}{abs(lat)}_1arc_v3.tif"
-        if not os.path.exists(filename):
-            filename = (
-                f"{dir_path}/../../data/clean/{ns}{lng}_{ew}0{abs(lat)}_1arc_v3.tif"
-            )
-            if not os.path.exists(filename):
-                print(f"geotiff does not exist!: {filename}")
-                return None
+
+        def get_filename():
+
+            filename1 = f"{ns}{lng}_{ew}{abs(lat)}_1arc_v3.tif"
+            filename2 = f"{ns}{lng}_{ew}0{abs(lat)}_1arc_v3.tif"
+            filename3 = f"{ns}{lng}_{ew}00{abs(lat)}_1arc_v3.tif"
+            for filename in [filename1, filename2, filename3]:
+                clean_dir_path = f"{dir_path}/../../data/clean/"
+                filepath = os.path.join(clean_dir_path, filename)
+                if os.path.exists(filepath):
+                    return filepath
+            print(f"geotiff does not exist!: {filepath}")
+            return None
+
+        filename = get_filename()
         if filename not in self.geotiffs:
             print(f"opening geotiff {filename}")
             self.geotiffs[filename] = GeoTIFF(filename)
@@ -69,5 +76,10 @@ class GeoTIFF:
 
         x = int(x * self.img.RasterYSize)
         y = int(y * self.img.RasterXSize)
+
+        if x >= self.img.RasterYSize:
+            x = self.img.RasterYSize - 1
+        if y >= self.img.RasterXSize:
+            y = self.img.RasterXSize - 1
 
         return self.band_arr[x, y]
