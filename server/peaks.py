@@ -6,7 +6,7 @@ import subprocess
 LOADED_PEAKS = False
 PEAKS = {}
 pwd = os.path.dirname(os.path.realpath(__file__))
-data_dir = os.path.join(pwd, "../data/peaks")
+data_dir = os.path.join(pwd, "./data/peaks")
 PEAKS_DIR = os.path.abspath(data_dir)
 
 

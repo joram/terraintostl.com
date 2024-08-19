@@ -10,10 +10,10 @@ INDEX = None
 class PeaksSearchEngine:
     def __init__(self):
         self.db_filepath = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), "../data/peaks.sqlite3")
+            os.path.join(os.path.dirname(__file__), "./data/peaks.sqlite3")
         )
         self.peaks_dir = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), "../data/peaks")
+            os.path.join(os.path.dirname(__file__), "./data/peaks")
         )
         if not os.path.exists(self.peaks_dir):
             self._clone_peaks_repo()
