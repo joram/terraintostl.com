@@ -2,7 +2,7 @@ import json
 import os.path
 from typing import Union
 
-SESSIONS_FILEPATH = os.path.abspath("../data/sessions.json")
+SESSIONS_FILEPATH = os.path.abspath("./data/sessions.json")
 
 
 def _get_json(filepath: str) -> dict:
